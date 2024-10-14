@@ -19,7 +19,7 @@ class Nivel_3:
         self.VELOCIDAD_FONDO = 3
 
         self.tiempo_inicial = pygame.time.get_ticks()
-        self.duracion_minutos = 1
+        self.duracion_minutos = 2
         self.duracion_milisegundos = self.duracion_minutos * 60 * 1000
         self.tiempo_transcurrido = 0
 

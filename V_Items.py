@@ -60,8 +60,7 @@ class Portal(Monedas):
     def detectar_colision(self, jugador, fuente, color_letras, color_fondo,
                         pantalla, superficie_opaca):
         if self.rectangulo.colliderect(jugador.rectangulo_principal):
-            jugador.puntaje += 100
-            you_win(fuente, color_letras, color_fondo, pantalla, superficie_opaca)
+            jugador.toco_portal = True
 
 
 

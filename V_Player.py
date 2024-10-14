@@ -28,11 +28,12 @@ class Personaje:
         self.direccion = "derecha"
         self.disparo = True
         self.esta_chocando = False
+        self.toco_portal = False
 
         self.rectangulos = obtener_rectangulos(self.rectangulo_principal)
     
     # ------  VITALIDAD  -------
-        self.vida = 50
+        self.vida = 100
         self.puntaje = 0
 
     # ------  SALTO  -------
@@ -53,18 +54,41 @@ class Personaje:
 
     def caminar(self, pantalla, plataformas):
         velocidad_actual = self.velocidad
-        if self.que_hace == "Izquierda" or self.que_hace == "CorreDisparaIzq" and not self.esta_chocando:
+        
+        if self.que_hace == "Izquierda" or self.que_hace == "CorreDisparaIzq":
             velocidad_actual *= -1
-            
-        nueva_posicion = self.rectangulos["main"].x + velocidad_actual
-        if 0 <= nueva_posicion <= (pantalla.get_width() - self.rectangulos["main"].width) and self.avanzar and not self.esta_chocando:
-                for lado in self.rectangulos:
-                    self.rectangulos[lado].x += velocidad_actual
-                    
-                    # for piso in plataformas:
-                    #     if self.rectangulos["right"].colliderect(piso.rectangulos["main"].left):
-                    #         self.avanzar = False
-                    #         break
+
+        self.rectangulo_principal.x += velocidad_actual
+        self.esta_chocando = False
+
+        for plataforma in plataformas:
+            if self.rectangulo_principal.colliderect(plataforma.rectangulo):
+                if velocidad_actual > 0:  # Moviendo hacia la derecha
+                    self.rectangulo_principal.right = plataforma.rectangulo.left
+                    self.esta_chocando = True
+                elif velocidad_actual < 0:  # Moviendo hacia la izquierda
+                    self.rectangulo_principal.left = plataforma.rectangulo.right
+                    self.esta_chocando = True
+
+        # Reposicionar los rectángulos secundarios
+        self.rectangulos = obtener_rectangulos(self.rectangulo_principal)
+
+    def mover_verticalmente(self, plataformas):
+
+        self.rectangulo_principal.y += self.desplazamiento_y
+
+        for plataforma in plataformas:
+            if self.rectangulo_principal.colliderect(plataforma.rectangulo):
+                if self.desplazamiento_y > 0:  # Colisión por abajo
+                    self.rectangulo_principal.bottom = plataforma.rectangulo.top
+                    self.desplazamiento_y = 0
+                    self.esta_saltando = False
+                elif self.desplazamiento_y < 0:  # Colisión por arriba
+                    self.rectangulo_principal.top = plataforma.rectangulo.bottom
+                    self.desplazamiento_y = 0
+
+        # Actualizar los rectángulos secundarios
+        self.rectangulos = obtener_rectangulos(self.rectangulo_principal)
 
 
     def animar(self, pantalla):
@@ -85,6 +109,119 @@ class Personaje:
                 self.esta_saltando = True
                 self.desplazamiento_y = self.potencia_salto
                 self.animacion_actual = self.animaciones["SaltaIzq"]
+
+
+    def aplicar_gravedad(self, pantalla, plataformas):
+        
+        velocidad_salto = self.desplazamiento_y
+
+        if self.esta_saltando:
+            self.animar(pantalla)
+
+            for lado in self.rectangulos:
+                self.rectangulos[lado].y += self.desplazamiento_y
+
+            if self.desplazamiento_y + self.gravedad < self.limite_velocidad_salto:
+                self.desplazamiento_y += self.gravedad
+
+        for piso in plataformas:
+            if self.rectangulos["bottom"].colliderect(piso.rectangulo):
+                self.desplazamiento_y = 0
+                self.esta_saltando = False
+                self.rectangulos["main"].bottom = piso.rectangulo.top
+                reubicar_rectangulos(self.rectangulo_principal,self.rectangulos)
+                break
+
+            elif self.rectangulos["top"].colliderect(piso.rectangulos["bottom"]):
+                self.desplazamiento_y *= -1
+
+            else:
+                self.esta_saltando = True
+
+
+    def detectar_colision(self, enemigos, height, plataforma_revive):
+        lista_proyectiles = self.lista_disparos
+        
+        if self.rectangulo_principal.top > height:
+            self.reiniciar(plataforma_revive)
+
+        for enemigo in enemigos:
+            if self.rectangulos["main"].colliderect(enemigo.rectangulo_principal):
+                self.vida -= 1
+            
+            for proyectil in lista_proyectiles:
+                if proyectil.rectangulo.colliderect(enemigo.rectangulo_principal):
+                    self.puntaje += 1
+
+
+    def reiniciar(self, plataforma_revive):
+        self.rectangulo_principal.x = plataforma_revive.x
+        self.rectangulo_principal.y = plataforma_revive.y - 75
+        self.esta_saltando = False
+        self.desplazamiento_y = 0
+        self.que_hace = "Quieto"
+        self.rectangulos = obtener_rectangulos(self.rectangulo_principal)
+
+
+    def disparar(self):
+        if self.direccion == "derecha":
+            x = self.rectangulos["main"].x + 35
+            y = self.rectangulos["main"].y + 32
+        elif self.direccion == "izquierda":
+            x = self.rectangulos["main"].centerx - 25
+            y = self.rectangulos["main"].centery
+        
+        nuevo_disparo = Disparo(x, y, self.direccion, PROYECTIL_JUGADOR)
+        nuevo_disparo.sonido_disparo.play()
+        self.lista_disparos.append(nuevo_disparo)
+
+    def you_win(self, fuente, color_letras, color_fondo, pantalla, superficie_opaca):
+        
+        tiempo_inicio = pygame.time.get_ticks()  # obtengo tiempo actual
+        
+        mensaje = fuente.render("¡GANASTE!", True, color_letras, color_fondo)
+        mitad_x = pantalla.get_width() // 2 - mensaje.get_width() // 2
+        pantalla.blit(superficie_opaca, (0,0))
+        pantalla.blit(mensaje, (mitad_x, 360))
+
+
+        pygame.display.flip()  # actualizo la pantalla
+
+        # con este bucle creamos una espera de 2 segundos antes de cerrar la ventana
+        while pygame.time.get_ticks() - tiempo_inicio < 3000: # (3000 milisegundos = 3 segundos)
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+
+        pygame.quit()
+        sys.exit()
+
+    def game_over(self, fuente, color_letras, color_fondo, pantalla, superficie_opaca):
+        '''
+        esta funcion recibe una fuente, algunos colores, la pantalla donde
+        se va a mostrar el "game over" y la superficie opaca es una surface
+        con 50% de opacidad, una cuestion estetica.
+        
+        esta funcion la utilizo cuando el jugador se equivoca o se queda sin tiempo
+        '''
+        
+        tiempo_inicio = pygame.time.get_ticks()  # obtengo tiempo actual
+        
+        mensaje = fuente.render("GAME OVER", True, color_letras, color_fondo)
+        pantalla.blit(superficie_opaca, (0,0))
+        pantalla.blit(mensaje, (275, 243))
+            
+        pygame.display.flip() 
+
+        while pygame.time.get_ticks() - tiempo_inicio < 2000:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+
+        pygame.quit()
+        sys.exit()
 
 
     def actualizar(self, pantalla, plataformas, enemigos, jugador,
@@ -142,13 +279,13 @@ class Personaje:
         match self.que_hace:
 
             case "Derecha":
-                if not self.esta_saltando and not self.esta_chocando:
+                if not self.esta_saltando:
                     self.animacion_actual = self.animaciones["Derecha"]
                     self.animar(pantalla)
                 self.caminar(pantalla, plataformas)
 
             case "Izquierda":
-                if not self.esta_saltando and not self.esta_chocando:
+                if not self.esta_saltando:
                     self.animacion_actual = self.animaciones["Izquierda"]
                     self.animar(pantalla)
                 self.caminar(pantalla, plataformas)
@@ -181,8 +318,11 @@ class Personaje:
                 self.animar(pantalla)
                 self.caminar(pantalla, plataformas)
 
+        if self.toco_portal == True:
+            self.you_win(fuente, color_letras, color_fondo, pantalla, superficie_opaca)
+
         if self.vida <= 0 or tiempo_agotado:
-            game_over(fuente, color_letras, color_fondo, pantalla, superficie_opaca)
+            self.game_over(fuente, color_letras, color_fondo, pantalla, superficie_opaca)
         
 
         self.aplicar_gravedad(pantalla, plataformas)
@@ -194,78 +334,3 @@ class Personaje:
                 del self.lista_disparos[i]
                 i -= 1
             i += 1
-
-
-    def aplicar_gravedad(self, pantalla, plataformas):
-        
-        velocidad_salto = self.desplazamiento_y
-
-        if self.esta_saltando:
-            self.animar(pantalla)
-
-            for lado in self.rectangulos:
-                self.rectangulos[lado].y += self.desplazamiento_y
-
-            if self.desplazamiento_y + self.gravedad < self.limite_velocidad_salto:
-                self.desplazamiento_y += self.gravedad
-
-        for piso in plataformas:
-            if self.rectangulos["bottom"].colliderect(piso.rectangulo):
-                self.desplazamiento_y = 0
-                self.esta_saltando = False
-                self.rectangulos["main"].bottom = piso.rectangulo.top
-                reubicar_rectangulos(self.rectangulo_principal,self.rectangulos)
-                break
-            
-            elif self.rectangulos["top"].colliderect(piso.rectangulos["bottom"]):
-                self.desplazamiento_y *= -1
-            
-            # elif self.rectangulos["right"].colliderect(piso.rectangulo):
-            #     self.rectangulos["main"].right = piso.rectangulo.left
-            #     self.desplazamiento_y = 0
-            #     self.esta_saltando = False
-
-            else:
-                self.esta_saltando = True
-
-
-    def detectar_colision(self, enemigos, height, plataforma_revive):
-        lista_proyectiles = self.lista_disparos
-        
-        if self.rectangulo_principal.top > height:
-            self.reiniciar(plataforma_revive)
-
-        for enemigo in enemigos:
-            if self.rectangulos["main"].colliderect(enemigo.rectangulo_principal):
-                self.vida -= 1
-            
-            for proyectil in lista_proyectiles:
-                if proyectil.rectangulo.colliderect(enemigo.rectangulo_principal):
-                    self.puntaje += 1
-        
-        # for plataforma in lista_plataformas:
-        #     if self.rectangulos["right"].colliderect(plataforma.left) and self.rectangulos["left"].colliderect(plataforma.right):
-        #         self.esta_chocando = True
-        #         self.x -= 5
-        
-
-    def reiniciar(self, plataforma_revive):
-        self.rectangulo_principal.x = plataforma_revive.x
-        self.rectangulo_principal.y = plataforma_revive.y - 75
-        self.esta_saltando = False
-        self.desplazamiento_y = 0
-        self.que_hace = "Quieto"
-        self.rectangulos = obtener_rectangulos(self.rectangulo_principal)
-
-
-    def disparar(self):
-        if self.direccion == "derecha":
-            x = self.rectangulos["main"].x + 35
-            y = self.rectangulos["main"].y + 32
-        elif self.direccion == "izquierda":
-            x = self.rectangulos["main"].centerx - 25
-            y = self.rectangulos["main"].centery
-        
-        nuevo_disparo = Disparo(x, y, self.direccion, PROYECTIL_JUGADOR)
-        nuevo_disparo.sonido_disparo.play()
-        self.lista_disparos.append(nuevo_disparo)

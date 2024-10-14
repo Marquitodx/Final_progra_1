@@ -14,7 +14,7 @@ PANTALLA = pygame.display.set_mode((ANCHO, ALTO))
 
 
 form_principal = FormPrincipal(PANTALLA,
-                                300, 75, 800, 700,
+                                195, 15, 800, 700,
                                 "cyan", "yellow",
                                 5, True,
                                 r"GUI\Recursos_gui\fondo_menu.png")

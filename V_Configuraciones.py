@@ -111,53 +111,9 @@ def reescalar_lista_imagenes(lista_imagenes, nuevo_ancho, nuevo_alto):
         imagenes_reescaladas.append(reescalar_imagen(imagen, nuevo_ancho, nuevo_alto))
     return imagenes_reescaladas
 
-def you_win(fuente, color_letras, color_fondo, pantalla, superficie_opaca):
-    
-    tiempo_inicio = pygame.time.get_ticks()  # obtengo tiempo actual
-    
-    mensaje = fuente.render("¡GANASTE!", True, color_letras, color_fondo)
-    mitad_x = pantalla.get_width() // 2 - mensaje.get_width() // 2
-    pantalla.blit(superficie_opaca, (0,0))
-    pantalla.blit(mensaje, (mitad_x, 360))
 
 
-    pygame.display.flip()  # actualizo la pantalla
 
-    # con este bucle creamos una espera de 2 segundos antes de cerrar la ventana
-    while pygame.time.get_ticks() - tiempo_inicio < 3000: # (3000 milisegundos = 3 segundos)
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-
-    pygame.quit()
-    sys.exit()
-
-def game_over(fuente, color_letras, color_fondo, pantalla, superficie_opaca):
-    '''
-    esta funcion recibe una fuente, algunos colores, la pantalla donde
-    se va a mostrar el "game over" y la superficie opaca es una surface
-    con 50% de opacidad, una cuestion estetica.
-    
-    esta funcion la utilizo cuando el jugador se equivoca o se queda sin tiempo
-    '''
-    
-    tiempo_inicio = pygame.time.get_ticks()  # obtengo tiempo actual
-    
-    mensaje = fuente.render("GAME OVER", True, color_letras, color_fondo)
-    pantalla.blit(superficie_opaca, (0,0))
-    pantalla.blit(mensaje, (275, 243))
-        
-    pygame.display.flip() 
-
-    while pygame.time.get_ticks() - tiempo_inicio < 2000:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-
-    pygame.quit()
-    sys.exit()
 
 
 

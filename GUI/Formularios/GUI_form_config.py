@@ -115,6 +115,3 @@ class FormConfig(Form):
             self._slave.blit(self.path_background, (0,0))
         else:
             self._slave.fill(self._color_background)
-
-
-

@@ -198,9 +198,9 @@ class FormPrincipal(Form):
                                 h = 700,
                                 color_background = "green",
                                 color_border = "grey",
-                                active = True,
-                                path_image = r"GUI\Recursos_gui\fondo_azul.png",
-                                path_background = r"GUI\Recursos_gui\fondo_azul.png")
+                                active = True)
+                                # path_image = r"GUI\Recursos_gui\fondo_azul.png",
+                                # path_background = r"GUI\Recursos_gui\fondo_azul.png")
         self.show_dialog(nuevo_form)
     
     def btn_quit(self, param):
