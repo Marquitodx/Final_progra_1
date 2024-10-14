@@ -28,8 +28,7 @@ class Monedas:
             lista_monedas.remove(self)
             jugador.puntaje += 2
             jugador.sonido_collec.play()
-            
- 
+
 
 # PORTAL hereda de monedas
 class Portal(Monedas):
@@ -49,7 +48,7 @@ class Portal(Monedas):
         pantalla.blit(self.imagen_actual, self.rectangulo)
     
     def actualizar(self, pantalla, jugador, fuente, 
-                   color_letras, color_fondo, superficie_opaca):
+                color_letras, color_fondo, superficie_opaca):
         
         self.imagen_actual = self.lista_imagenes[self.contador_imagenes]
         self.animar(pantalla)
@@ -59,11 +58,11 @@ class Portal(Monedas):
                                 pantalla, superficie_opaca)
     
     def detectar_colision(self, jugador, fuente, color_letras, color_fondo,
-                           pantalla, superficie_opaca):
+                        pantalla, superficie_opaca):
         if self.rectangulo.colliderect(jugador.rectangulo_principal):
             jugador.puntaje += 100
             you_win(fuente, color_letras, color_fondo, pantalla, superficie_opaca)
-            
+
 
 
 
@@ -87,5 +86,4 @@ class Vida:
             jugador.sonido_vida.play()
         elif self.rectangulo.y > alto:
             lista_corazones.remove(self)
-    
-    
+

@@ -27,6 +27,7 @@ class Personaje:
         self.animacion_actual = self.animaciones["Quieto"]
         self.direccion = "derecha"
         self.disparo = True
+        self.esta_chocando = False
 
         self.rectangulos = obtener_rectangulos(self.rectangulo_principal)
     
@@ -52,11 +53,11 @@ class Personaje:
 
     def caminar(self, pantalla, plataformas):
         velocidad_actual = self.velocidad
-        if self.que_hace == "Izquierda" or self.que_hace == "CorreDisparaIzq":
+        if self.que_hace == "Izquierda" or self.que_hace == "CorreDisparaIzq" and not self.esta_chocando:
             velocidad_actual *= -1
             
         nueva_posicion = self.rectangulos["main"].x + velocidad_actual
-        if 0 <= nueva_posicion <= (pantalla.get_width() - self.rectangulos["main"].width) and self.avanzar:
+        if 0 <= nueva_posicion <= (pantalla.get_width() - self.rectangulos["main"].width) and self.avanzar and not self.esta_chocando:
                 for lado in self.rectangulos:
                     self.rectangulos[lado].x += velocidad_actual
                     
@@ -141,24 +142,24 @@ class Personaje:
         match self.que_hace:
 
             case "Derecha":
-                if not self.esta_saltando:
+                if not self.esta_saltando and not self.esta_chocando:
                     self.animacion_actual = self.animaciones["Derecha"]
                     self.animar(pantalla)
                 self.caminar(pantalla, plataformas)
 
             case "Izquierda":
-                if not self.esta_saltando:
+                if not self.esta_saltando and not self.esta_chocando:
                     self.animacion_actual = self.animaciones["Izquierda"]
                     self.animar(pantalla)
                 self.caminar(pantalla, plataformas)
 
             case "Quieto":
-                if not self.esta_saltando:
+                if not self.esta_saltando and not self.esta_chocando:
                     self.animacion_actual = self.animaciones["Quieto"]
                     self.animar(pantalla)
             
             case "QuietoIzq":
-                if not self.esta_saltando:
+                if not self.esta_saltando and not self.esta_chocando:
                     self.animacion_actual = self.animaciones["QuietoIzq"]
                     self.animar(pantalla)
             
@@ -241,6 +242,11 @@ class Personaje:
             for proyectil in lista_proyectiles:
                 if proyectil.rectangulo.colliderect(enemigo.rectangulo_principal):
                     self.puntaje += 1
+        
+        # for plataforma in lista_plataformas:
+        #     if self.rectangulos["right"].colliderect(plataforma.left) and self.rectangulos["left"].colliderect(plataforma.right):
+        #         self.esta_chocando = True
+        #         self.x -= 5
         
 
     def reiniciar(self, plataforma_revive):

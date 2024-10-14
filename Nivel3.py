@@ -58,8 +58,8 @@ class Nivel_3:
         self.superficie_opaca.fill((0, 0, 0, 128))
 
         self.portal_creado = False
-
-
+        
+        self.juego_terminado = False
 
 
     def update(self, lista_eventos):
@@ -91,13 +91,15 @@ class Nivel_3:
                 self.portal = Portal(lista_imagenes_portal, 400, 160)
                 self.portal_creado = True
 
-            if self.portal_creado:
+            if self.portal_creado and not self.juego_terminado:
                 self.portal.actualizar(self._slave,
                                     self.jugador, 
                                     self.FUENTE_GRANDE,
                                     self.BLANCO, 
                                     self.VERDE, 
                                     self.superficie_opaca)
+                if self.portal.portal_tocado:
+                    self.juego_terminado = True
             
             for enemigo in self.lista_enemigos:
                 enemigo.actualizar(self._slave, 
@@ -128,7 +130,8 @@ class Nivel_3:
                                 self.plataformas, self.lista_enemigos, 
                                 self.lista_monedas)
             
-            pygame.display.flip()
+            if not self.juego_terminado:
+                pygame.display.flip()
 
     def leer_inputs(self, eventos, tiempo_creacion_enemigo,
                     lista_enemigos, enemigo, vida, lista_vidas):

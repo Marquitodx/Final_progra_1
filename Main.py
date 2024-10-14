@@ -22,7 +22,6 @@ form_principal = FormPrincipal(PANTALLA,
 
 while True:
     RELOJ.tick(FPS)
-    PANTALLA.fill((173, 216, 230))
 
     lista_eventos = pygame.event.get()
     for evento in lista_eventos:

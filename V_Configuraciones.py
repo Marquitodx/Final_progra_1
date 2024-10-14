@@ -2,9 +2,9 @@ import pygame, sys
 import pygame.mixer
 
 
-'''------------------------------------------------------------------------
-   -------------------  F U N C I O N E S  --------------------------------
-   ------------------------------------------------------------------------'''
+# -----------------------------------------------------------------------
+#                     F U N C I O N E S   
+# ----------------------------------------------------------------------- 
 
 def girar_imagenes(lista_original,flip_x,flip_y):
     '''
@@ -36,40 +36,39 @@ def obtener_rectangulos(principal: pygame.Rect):
 
     retorna el diccionario con los 5 rectangulos
     '''
-    '''diccionario = {
-        "main": principal,
-        "bottom": pygame.Rect(principal.left, 
-                              principal.bottom - 8,
-                              principal.width,
-                              10),
-        "top": pygame.Rect(principal.left + 9,
-                           principal.top + 5,
-                           principal.width - 12,
-                           10),
-        "right": pygame.Rect(principal.right - 14,
-                             principal.top + 5,
-                             10,
-                             principal.height),
-        "left": pygame.Rect(principal.left + 3,
-                            principal.top + 5,
-                            10,
-                            principal.height)
-    }'''
+
+    '''diccionario = {  "main": principal,
+                        "bottom": pygame.Rect(principal.left, 
+                                            principal.bottom - 8,
+                                            principal.width,
+                                            10),
+                        "top": pygame.Rect(principal.left + 9,
+                                            principal.top + 5,
+                                            principal.width - 12,
+                                            10),
+                        "right": pygame.Rect(principal.right - 14,
+                                            principal.top + 5,
+                                            10,
+                                            principal.height),
+                        "left": pygame.Rect(principal.left + 3,
+                                            principal.top + 5,
+                                            10,
+                                            principal.height)   }'''
 
     diccionario = {
         "main": principal,
         "bottom": pygame.Rect(principal.left, 
-                              principal.bottom - 10,
-                              principal.width,
-                              10),
+                            principal.bottom - 10,
+                            principal.width,
+                            10),
         "top": pygame.Rect(principal.left,
-                           principal.top,
-                           principal.width,
-                           10),
+                            principal.top,
+                            principal.width,
+                            10),
         "right": pygame.Rect(principal.right - 10,
-                             principal.top,
-                             10,
-                             principal.height),
+                            principal.top,
+                            10,
+                            principal.height),
         "left": pygame.Rect(principal.left,
                             principal.top,
                             10,
@@ -250,9 +249,9 @@ personaje_corre_dispara_izquierda = girar_imagenes(personaje_corre_dispara, True
 
 
 
-''' -----------------------------------------------------------------------
-----------------------  E N E M I G O S  ----------------------------------
------------------------------------------------------------------------- '''
+# -----------------------------------------------------------------------
+#                        E N E M I G O S 
+# -----------------------------------------------------------------------
 
 enemigo_camina = [pygame.image.load(r"enemigo\run 1.png"),
                 pygame.image.load(r"enemigo\run 2.png"),
@@ -287,9 +286,9 @@ enemigo_salta_izquierda  = girar_imagenes(enemigo_salta, True, False)
 
 
 
-''' -----------------------------------------------------------------------
-----------------------  M O N E D A S  ------------------------------------
------------------------------------------------------------------------- '''
+# -----------------------------------------------------------------------
+#                        M O N E D A S  
+# -----------------------------------------------------------------------
 
 lista1_monedas =   [pygame.image.load(r"monedas\1.png"),
                     pygame.image.load(r"monedas\2.png"),
@@ -308,9 +307,9 @@ segunda_lista_monedas = reescalar_lista_imagenes(lista2_monedas, 20, 20)
 
 
 
-''' -----------------------------------------------------------------------
-----------------------  P O R T A L  ------------------------------------
------------------------------------------------------------------------- '''
+# -----------------------------------------------------------------------
+#                       P O R T A L  
+# -----------------------------------------------------------------------
 
 imagenes_portal =  [pygame.image.load(r"Recursos\portal1.png"),
                     pygame.image.load(r"Recursos\portal2.png"),
