@@ -44,7 +44,7 @@ class FormMenuScore(Form):
                                         font_color = (255,255,255),
                                         path_image = r"GUI\Recursos_gui\bar.png"))
         
-        pos_inicial_y = margen_y + 75
+        pos_inicial_y = margen_y + 50
         
         
         for j in self._score:

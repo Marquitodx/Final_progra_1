@@ -41,6 +41,8 @@ class Nivel_3:
         self.VERDE = (0, 220, 0)
         self.ROJO = (250, 0, 0)
 
+        self.sonidos(MUSICA_NIVEL_3)
+
         self.jugador = Personaje((70, 70), piso_1_n3.rectangulo, 5)
 
 
@@ -132,6 +134,11 @@ class Nivel_3:
             
             if not self.juego_terminado:
                 pygame.display.flip()
+
+    def sonidos(self, musica):
+        pygame.mixer.music.load(musica)
+        pygame.mixer.music.set_volume(0.2)
+        pygame.mixer.music.play(-1)
 
     def leer_inputs(self, eventos, tiempo_creacion_enemigo,
                     lista_enemigos, enemigo, vida, lista_vidas):

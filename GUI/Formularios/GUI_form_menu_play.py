@@ -30,7 +30,7 @@ class FormMenuPlay(Form):
 
 
         self._btn_level_1 = Button_Image(screen = self._slave,
-                                        x = 75,
+                                        x = 55,
                                         y = 50,
                                         master_x = x,
                                         master_y = y,
@@ -41,7 +41,7 @@ class FormMenuPlay(Form):
                                         path_image = r"GUI\Recursos_gui\button_lvl_1.png")
 
         self._btn_level_2 = Button_Image(screen = self._slave,
-                                        x = 275,
+                                        x = 255,
                                         y = 50,
                                         master_x = x,
                                         master_y = y,
@@ -52,7 +52,7 @@ class FormMenuPlay(Form):
                                         path_image = r"GUI\Recursos_gui\button_lvl_2.png")
 
         self._btn_level_3 = Button_Image(screen = self._slave,
-                                        x = 75,
+                                        x = 55,
                                         y = 250,
                                         master_x = x,
                                         master_y = y,
@@ -72,6 +72,7 @@ class FormMenuPlay(Form):
                                         onclick = self._btn_home_click,
                                         onclick_param = "",
                                         path_image = r"GUI\Recursos_gui\button_home_2.png")
+        
         with open("Datos_actuales.json", "r", encoding = "UTF8") as archivo:
             datos = json.load(archivo)
         

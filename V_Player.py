@@ -1,4 +1,4 @@
-import pygame
+import pygame, sys
 from V_Configuraciones import *
 from V_Disparos import *
 
@@ -73,23 +73,6 @@ class Personaje:
         # Reposicionar los rectángulos secundarios
         self.rectangulos = obtener_rectangulos(self.rectangulo_principal)
 
-    def mover_verticalmente(self, plataformas):
-
-        self.rectangulo_principal.y += self.desplazamiento_y
-
-        for plataforma in plataformas:
-            if self.rectangulo_principal.colliderect(plataforma.rectangulo):
-                if self.desplazamiento_y > 0:  # Colisión por abajo
-                    self.rectangulo_principal.bottom = plataforma.rectangulo.top
-                    self.desplazamiento_y = 0
-                    self.esta_saltando = False
-                elif self.desplazamiento_y < 0:  # Colisión por arriba
-                    self.rectangulo_principal.top = plataforma.rectangulo.bottom
-                    self.desplazamiento_y = 0
-
-        # Actualizar los rectángulos secundarios
-        self.rectangulos = obtener_rectangulos(self.rectangulo_principal)
-
 
     def animar(self, pantalla):
         largo = len(self.animacion_actual)
@@ -129,7 +112,7 @@ class Personaje:
                 self.desplazamiento_y = 0
                 self.esta_saltando = False
                 self.rectangulos["main"].bottom = piso.rectangulo.top
-                reubicar_rectangulos(self.rectangulo_principal,self.rectangulos)
+                reubicar_rectangulos(self.rectangulo_principal, self.rectangulos)
                 break
 
             elif self.rectangulos["top"].colliderect(piso.rectangulos["bottom"]):
@@ -155,8 +138,10 @@ class Personaje:
 
 
     def reiniciar(self, plataforma_revive):
+
         self.rectangulo_principal.x = plataforma_revive.x
         self.rectangulo_principal.y = plataforma_revive.y - 75
+        self.vida -= 10
         self.esta_saltando = False
         self.desplazamiento_y = 0
         self.que_hace = "Quieto"
@@ -175,6 +160,7 @@ class Personaje:
         nuevo_disparo.sonido_disparo.play()
         self.lista_disparos.append(nuevo_disparo)
 
+
     def you_win(self, fuente, color_letras, color_fondo, pantalla, superficie_opaca):
         
         tiempo_inicio = pygame.time.get_ticks()  # obtengo tiempo actual
@@ -188,7 +174,7 @@ class Personaje:
         pygame.display.flip()  # actualizo la pantalla
 
         # con este bucle creamos una espera de 2 segundos antes de cerrar la ventana
-        while pygame.time.get_ticks() - tiempo_inicio < 3000: # (3000 milisegundos = 3 segundos)
+        while pygame.time.get_ticks() - tiempo_inicio < 2000: # (2000 milisegundos = 2 segundos)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
@@ -196,6 +182,7 @@ class Personaje:
 
         pygame.quit()
         sys.exit()
+
 
     def game_over(self, fuente, color_letras, color_fondo, pantalla, superficie_opaca):
         '''
@@ -275,7 +262,8 @@ class Personaje:
         elif self.direccion == "derecha":
                 self.que_hace = "Quieto"
 
-
+        
+        
         match self.que_hace:
 
             case "Derecha":
@@ -318,12 +306,11 @@ class Personaje:
                 self.animar(pantalla)
                 self.caminar(pantalla, plataformas)
 
-        if self.toco_portal == True:
+        if self.toco_portal:
             self.you_win(fuente, color_letras, color_fondo, pantalla, superficie_opaca)
 
-        if self.vida <= 0 or tiempo_agotado:
-            self.game_over(fuente, color_letras, color_fondo, pantalla, superficie_opaca)
-        
+        elif self.vida <= 0 or tiempo_agotado:
+                self.game_over(fuente, color_letras, color_fondo, pantalla, superficie_opaca)    
 
         self.aplicar_gravedad(pantalla, plataformas)
 
@@ -334,3 +321,24 @@ class Personaje:
                 del self.lista_disparos[i]
                 i -= 1
             i += 1
+
+
+'''
+    def mover_verticalmente(self, plataformas):
+
+        self.rectangulo_principal.y += self.desplazamiento_y
+
+        for plataforma in plataformas:
+            if self.rectangulo_principal.colliderect(plataforma.rectangulo):
+                if self.desplazamiento_y > 0:  # Colisión por abajo
+                    self.rectangulo_principal.bottom = plataforma.rectangulo.top
+                    self.desplazamiento_y = 0
+                    self.esta_saltando = False
+                elif self.desplazamiento_y < 0:  # Colisión por arriba
+                    self.rectangulo_principal.top = plataforma.rectangulo.bottom
+                    self.desplazamiento_y = 0
+
+        # Actualizar los rectángulos secundarios
+        self.rectangulos = obtener_rectangulos(self.rectangulo_principal)
+
+'''

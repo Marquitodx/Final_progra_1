@@ -54,13 +54,21 @@ class Portal(Monedas):
         self.animar(pantalla)
         self.contador_imagenes = (self.contador_imagenes + 1) % len(self.lista_imagenes)
 
-        self.detectar_colision(jugador, fuente, color_letras, color_fondo,
-                                pantalla, superficie_opaca)
+        self.detectar_colision(jugador, fuente, pantalla, color_letras, color_fondo, superficie_opaca)
     
-    def detectar_colision(self, jugador, fuente, color_letras, color_fondo,
-                        pantalla, superficie_opaca):
+
+    def detectar_colision(self, jugador, fuente, pantalla, color_letras, color_fondo, superficie_opaca):
         if self.rectangulo.colliderect(jugador.rectangulo_principal):
+            self.portal_tocado = True
             jugador.toco_portal = True
+            print("tocaste el portal")
+            # mensaje = fuente.render("¡GANASTE!", True, color_letras, color_fondo)
+            # mitad_x = pantalla.get_width() // 2 - mensaje.get_width() // 2
+            # pantalla.blit(superficie_opaca, (0,0))
+            # pantalla.blit(mensaje, (mitad_x, 360))
+
+
+            pygame.display.flip()  # actualizo la pantalla
 
 
 

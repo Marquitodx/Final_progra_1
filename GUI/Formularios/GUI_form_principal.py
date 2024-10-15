@@ -36,22 +36,23 @@ class FormPrincipal(Form):
         self.posicion_x = x
         self.posicion_y = y
         self.path_background = path_background
-        if self.path_background != None:
-            path_image = self.path_background
-            self.path_background = pygame.image.load(path_image)
-            self.path_background = pygame.transform.scale(self.path_background, (w,h))
+        if self.path_background:
+            try:
+                path_image = self.path_background
+                self.path_background = pygame.image.load(path_image)
+                self.path_background = pygame.transform.scale(self.path_background, (w, h))
+            except pygame.error as e:
+                print(f"Error al cargar la imagen de fondo: {e}")
         
 
-        formato_de_datos_vacio = \
-        [
-            {
+        formato_de_datos_vacio =[{
                 "nombre_actual": "Sin_nombre",
                 "puntaje_nivel_1": 0,
                 "puntaje_nivel_2": 0,
                 "puntaje_nivel_3": 0,
                 "puntaje_nivel_4": 0,
-            }
-        ]
+            }]
+
         with open ("Datos_actuales.json", "w", encoding= "UTF8") as archivo:
             json.dump(formato_de_datos_vacio, archivo, indent = 4, ensure_ascii = False)
         
@@ -174,8 +175,8 @@ class FormPrincipal(Form):
             {"Jugador":lista_top_tres[2][0], "Score": lista_top_tres[2][1]},]
 
         nuevo_form = FormMenuScore(screen = self._master,
-                                    x = 300,
-                                    y = 75,
+                                    x = 200,
+                                    y = 10,
                                     w = 800,
                                     h = 700,
                                     color_background = "green",
@@ -198,9 +199,9 @@ class FormPrincipal(Form):
                                 h = 700,
                                 color_background = "green",
                                 color_border = "grey",
-                                active = True)
-                                # path_image = r"GUI\Recursos_gui\fondo_azul.png",
-                                # path_background = r"GUI\Recursos_gui\fondo_azul.png")
+                                active = True,
+                                path_image = r"GUI\Recursos_gui\fondo_azul.png",
+                                path_background = r"GUI\Recursos_gui\fondo_azul.png")
         self.show_dialog(nuevo_form)
     
     def btn_quit(self, param):

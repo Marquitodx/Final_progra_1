@@ -89,10 +89,13 @@ class Nivel_1:
         if len(self.lista_monedas) <= 0 and not self.portal_creado:
             self.portal = Portal(lista_imagenes_portal, 995, 155)
             self.portal_creado = True
+            if self.portal.portal_tocado:
+                self.jugador.you_win(self.FUENTE_GRANDE, self.BLANCO, self.ROJO, self._slave, self.superficie_opaca)
 
         if self.portal_creado:
             self.portal.actualizar(self._slave, self.jugador, self.FUENTE_GRANDE,
                                 self.BLANCO, self.VERDE, self.superficie_opaca)
+        
 
         for enemigo in self.lista_enemigos:
             enemigo.actualizar(self._slave, self.lista_enemigos, self.plataformas, self.jugador)
@@ -105,6 +108,7 @@ class Nivel_1:
         self.jugador.actualizar(self._slave, self.plataformas, self.lista_enemigos, self.jugador,
                                 self.FUENTE_GRANDE, self.BLANCO, self.ROJO, self.superficie_opaca, 
                                 tiempo_agotado)
+        
         self.jugador.detectar_colision(self.lista_enemigos, self.ALTO, piso_nuevo)
 
         for vida in self.lista_vidas:
